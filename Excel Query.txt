@@ -1,0 +1,8 @@
+let
+    Source = Csv.Document(File.Contents("C:\Users\NeilD\OneDrive - BUI\Documents\Customers\1 BUI\rain\2024-07 Threat Protection Eng\CreateRulesTNG\rulestemplate.csv"),[Delimiter=",", Columns=11, Encoding=1252, QuoteStyle=QuoteStyle.Csv]),
+    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Selected", type text}, {"Name", type text}, {"ID", type text}, {"Source", type text}, {"Severity", type text}, {"Kind", type text}, {"Description", type text}, {"Tactics", type text}, {"Techniques", type text}, {"QueryFrequency", type duration}, {"QueryPeriod", type duration}}),
+    #"Filtered Rows" = Table.SelectRows(#"Changed Type", each not Text.Contains([Name], "TI map") and not Text.Contains([Name], "TI Map") and not Text.Contains([Name], "Cisco") and not Text.Contains([Name], "AWS") and not Text.Contains([Name], "Fortinet") and not Text.Contains([Name], "[Deprecated]") and not Text.Contains([Name], "Azure Key Vault") and not Text.Contains([Name], "DevOps") and not Text.Contains([Name], "GitHub") and not Text.Contains([Name], "ADFS") and not Text.Contains([Name], "ProofpointPOD")),
+    #"Replaced Value" = Table.ReplaceValue(#"Filtered Rows","","X",Replacer.ReplaceValue,{"Selected"})
+in
+    #"Replaced Value"
